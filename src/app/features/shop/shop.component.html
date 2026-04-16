@@ -1,0 +1,75 @@
+<app-hero
+  [title]="'All Products'"
+  [subtitle]="'Explore our complete product collection'"
+  [icon]="'fa-box-open'"
+  [breadcrumbs]="shopBreadcrumbs"
+></app-hero>
+
+<section class="py-12">
+  <div class="container mx-auto px-4">
+    <div class="flex items-center justify-between mb-8">
+      @if(!isLoading()) {
+        <p class="text-sm text-gray-400 font-medium">Showing <span class="text-gray-900 dark:text-gray-100">{{ productsList().length }}</span> of <span class="text-gray-900 dark:text-gray-100">{{ totalResults() }}</span> products</p>
+      }
+    </div>
+
+    @if(isLoading()) {
+      <app-loading [loadingText]="'Loading Products...'"></app-loading>
+    } @else {
+      <app-products-shared [externalProducts]="productsList()"></app-products-shared>
+
+      @if(numberOfPages() > 1) {
+        <nav aria-label="Page navigation" class="flex items-center space-x-4 justify-center mt-10 mb-6">
+          <ul class="flex -space-x-px text-sm">
+            <li>
+              <button
+                (click)="previousPage()"
+                [disabled]="currentPage() === 1"
+                class="flex items-center justify-center text-body bg-neutral-secondary-medium border border-default-medium hover:bg-neutral-tertiary-medium hover:text-heading shadow-xs font-medium leading-5 rounded-s-base text-sm px-3 h-9 focus:outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              >Previous</button>
+            </li>
+
+            @for (page of pages(); track page) {
+              <li>
+                @if(currentPage() === page) {
+                  <button
+                    (click)="goToPage(page)"
+                    aria-current="page"
+                    class="flex items-center justify-center text-fg-brand bg-neutral-tertiary-medium box-border border border-default-medium hover:text-fg-brand font-medium text-sm w-9 h-9 focus:outline-none cursor-pointer"
+                  >{{ page }}</button>
+                } @else {
+                  <button
+                    (click)="goToPage(page)"
+                    class="flex items-center justify-center text-body bg-neutral-secondary-medium border border-default-medium hover:bg-neutral-tertiary-medium hover:text-heading shadow-xs font-medium leading-5 text-sm w-9 h-9 focus:outline-none cursor-pointer"
+                  >{{ page }}</button>
+                }
+              </li>
+            }
+
+            <li>
+              <button
+                (click)="nextPage()"
+                [disabled]="currentPage() === numberOfPages()"
+                class="flex items-center justify-center text-body bg-neutral-secondary-medium border border-default-medium hover:bg-neutral-tertiary-medium hover:text-heading shadow-xs font-medium leading-5 rounded-e-base text-sm px-3 h-9 focus:outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              >Next</button>
+            </li>
+          </ul>
+
+          <form (submit)="$event.preventDefault(); goToPage(+goToInput.value); goToInput.value = ''">
+            <div class="flex items-center space-x-2">
+              <label for="goToPage" class="text-sm font-medium text-body shrink-0">Go to</label>
+              <input
+                #goToInput
+                type="text"
+                id="goToPage"
+                class="bg-neutral-secondary-medium w-10 border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block px-2.5 py-2 shadow-xs placeholder:text-body"
+                [placeholder]="'' + currentPage()"
+              />
+              <span class="text-sm font-medium text-body">page</span>
+            </div>
+          </form>
+        </nav>
+      }
+    }
+  </div>
+</section>

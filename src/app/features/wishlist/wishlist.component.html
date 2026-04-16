@@ -1,0 +1,172 @@
+<app-hero
+  [title]="'My Wishlist'"
+  [subtitle]="'Manage your saved favorites here'"
+  [icon]="'fa-heart'"
+  [breadcrumbs]="wishlistBreadcrumbs"
+  [gradient]="'from-rose-600 via-pink-500 to-rose-400'"
+></app-hero>
+
+@if (isLoading()) {
+  <app-loading [loadingText]="'Loading Wishlist...'"></app-loading>
+} @else if (wishlistService.wishlistItems().length === 0) {
+  <div class="min-h-[60vh] flex items-center justify-center">
+    <div class="max-w-sm mx-auto text-center">
+      <div class="w-20 h-20 rounded-2xl bg-gray-100 dark:bg-slate-800 flex items-center justify-center mx-auto mb-6">
+        <svg
+          data-prefix="far"
+          data-icon="heart"
+          class="svg-inline--fa fa-heart text-3xl text-gray-400"
+          role="img"
+          viewBox="0 0 512 512"
+          aria-hidden="true"
+          width="32"
+          height="32"
+        >
+          <path
+            fill="currentColor"
+            d="M378.9 80c-27.3 0-53 13.1-69 35.2l-34.4 47.6c-4.5 6.2-11.7 9.9-19.4 9.9s-14.9-3.7-19.4-9.9l-34.4-47.6c-16-22.1-41.7-35.2-69-35.2-47 0-85.1 38.1-85.1 85.1 0 49.9 32 98.4 68.1 142.3 41.1 50 91.4 94 125.9 120.3 3.2 2.4 7.9 4.2 14 4.2s10.8-1.8 14-4.2c34.5-26.3 84.8-70.4 125.9-120.3 36.2-43.9 68.1-92.4 68.1-142.3 0-47-38.1-85.1-85.1-85.1zM271 87.1c25-34.6 65.2-55.1 107.9-55.1 73.5 0 133.1 59.6 133.1 133.1 0 68.6-42.9 128.9-79.1 172.8-44.1 53.6-97.3 100.1-133.8 127.9-12.3 9.4-27.5 14.1-43.1 14.1s-30.8-4.7-43.1-14.1C176.4 438 123.2 391.5 79.1 338 42.9 294.1 0 233.7 0 165.1 0 91.6 59.6 32 133.1 32 175.8 32 216 52.5 241 87.1l15 20.7 15-20.7z"
+          ></path>
+        </svg>
+      </div>
+      <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">Your wishlist is empty</h2>
+      <p class="text-gray-500 text-sm mb-6">
+        Browse products and save your favorites here. Sign in to sync your wishlist across devices.
+      </p>
+      <div class="flex flex-col gap-3">
+        <a
+          routerLink="/shop"
+          class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-emerald-600 text-white font-semibold hover:bg-emerald-700 transition-colors"
+          >Browse Products
+          <svg
+            data-prefix="fas"
+            data-icon="arrow-right"
+            class="svg-inline--fa fa-arrow-right text-sm"
+            role="img"
+            viewBox="0 0 512 512"
+            aria-hidden="true"
+            width="14"
+            height="14"
+          >
+            <path
+              fill="currentColor"
+              d="M502.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l370.7 0-105.4 105.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"
+            ></path>
+          </svg>
+        </a>
+        <a
+          routerLink="/login"
+          class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-white border border-gray-200 text-gray-700 font-semibold hover:bg-gray-50 transition-colors"
+          >Sign In</a
+        >
+      </div>
+    </div>
+  </div>
+} @else {
+  <div class="min-h-screen bg-gray-50/50 dark:bg-[#0c0f17] transition-colors duration-300">
+    <div class="container mx-auto px-4 py-12">
+      <div class="bg-white dark:bg-[#151923] rounded-2xl border border-gray-100 dark:border-slate-800 overflow-hidden">
+        <div
+          class="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-slate-800/50 border-b border-gray-100 dark:border-slate-800 text-sm font-medium text-gray-500 dark:text-slate-400"
+        >
+          <div class="col-span-6">Product</div>
+          <div class="col-span-2 text-center">Price</div>
+          <div class="col-span-2 text-center">Status</div>
+          <div class="col-span-2 text-center">Actions</div>
+        </div>
+        <div class="divide-y divide-gray-100 dark:divide-slate-800">
+          @for (item of wishlistService.wishlistItems(); track item._id || item.id) {
+            <div
+              class="grid grid-cols-1 md:grid-cols-12 gap-4 p-4 md:px-6 md:py-5 items-center hover:bg-gray-50/50 dark:hover:bg-slate-800/30 transition-colors"
+            >
+              <div class="md:col-span-6 flex items-center gap-4">
+                <a
+                  class="w-20 h-20 rounded-xl bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 overflow-hidden shrink-0"
+                  [routerLink]="['/details', item._id || item.id, item.slug]"
+                  ><img
+                    [alt]="item.title"
+                    class="w-full h-full object-contain p-2"
+                    [src]="item.imageCover"
+                /></a>
+                <div class="min-w-0">
+                  <a
+                    class="font-medium text-gray-900 dark:text-gray-100 hover:text-green-600 transition-colors line-clamp-2"
+                    [routerLink]="['/details', item._id || item.id, item.slug]"
+                    >{{ item.title }}</a
+                  >
+                  <p class="text-sm text-gray-400 dark:text-slate-500 mt-1">{{ item.category?.name }}</p>
+                </div>
+              </div>
+              <div class="md:col-span-2 flex md:justify-center items-center gap-2">
+                <span class="md:hidden text-sm text-gray-500">Price:</span>
+                <div class="text-right md:text-center">
+                  <div class="font-semibold text-gray-900 dark:text-gray-100">{{ item.price }} EGP</div>
+                </div>
+              </div>
+              <div class="md:col-span-2 flex md:justify-center">
+                <span class="md:hidden text-sm text-gray-500 mr-2">Status:</span>
+                @if (item.quantity > 0) {
+                  <span
+                    class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700"
+                    ><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>In Stock</span
+                  >
+                } @else {
+                  <span
+                    class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700"
+                    ><span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>Out of Stock</span
+                  >
+                }
+              </div>
+              <div class="md:col-span-2 flex items-center gap-2 md:justify-center">
+                @if (cartService.isInCart(item._id || item.id)) {
+                  <button
+                    routerLink="/cart"
+                    class="flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold transition-all bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-200 dark:hover:bg-emerald-900/50 cursor-pointer shadow-sm group"
+                  >
+                    <i class="fas fa-check-circle text-emerald-600 group-hover:scale-110 transition-transform"></i>
+                    <span class="md:hidden lg:inline">In Cart</span>
+                  </button>
+                } @else {
+                  <button
+                    (click)="addToCart(item._id || item.id)"
+                    class="flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold transition-all bg-gray-900 text-white hover:bg-emerald-600 cursor-pointer shadow-md shadow-gray-200"
+                  >
+                    <i class="fas fa-cart-plus text-xs"></i>
+                    <span class="md:hidden lg:inline">Add to Cart</span>
+                  </button>
+                }
+                <button
+                  (click)="removeItem(item._id || item.id)"
+                  class="w-10 h-10 rounded-lg border border-gray-200 dark:border-slate-700 flex items-center justify-center text-gray-400 hover:text-red-500 hover:border-red-200 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all cursor-pointer"
+                  title="Remove"
+                >
+                  <svg
+                    data-prefix="fas"
+                    data-icon="trash"
+                    class="svg-inline--fa fa-trash text-sm"
+                    role="img"
+                    viewBox="0 0 448 512"
+                    aria-hidden="true"
+                    width="18"
+                    height="18"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M136.7 5.9L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-8.7-26.1C306.9-7.2 294.7-16 280.9-16L167.1-16c-13.8 0-26 8.8-30.4 21.9zM416 144L32 144 53.1 467.1C54.7 492.4 75.7 512 101 512L347 512c25.3 0 46.3-19.6 47.9-44.9L416 144z"
+                    ></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+      <div class="mt-8 flex items-center justify-between">
+        <a
+          class="text-gray-500 hover:text-green-600 text-sm font-medium transition-colors"
+          routerLink="/shop"
+          >← Continue Shopping</a
+        >
+      </div>
+    </div>
+  </div>
+}

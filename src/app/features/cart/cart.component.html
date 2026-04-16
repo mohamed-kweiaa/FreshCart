@@ -1,0 +1,276 @@
+<app-hero
+  [title]="'Shopping Cart'"
+  [subtitle]="'You have ' + (totalItems() || 0) + ' items in your cart'"
+  [icon]="'fa-cart-shopping'"
+  [breadcrumbs]="cartBreadcrumbs"
+  [gradient]="'from-emerald-600 via-emerald-500 to-emerald-400'"
+></app-hero>
+
+<section class="min-h-[80vh] bg-slate-50/50 dark:bg-[#0c0f17] py-12 transition-colors duration-300">
+  <div class="container mx-auto px-4 max-w-7xl">
+
+    @if (cartDetails()?.products?.length > 0) {
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <!-- !---------------------- Left side  !---------------------- -->
+        <div class="lg:col-span-8 space-y-4">
+          @for (item of cartDetails()?.products; track item.product._id) {
+            <div
+              class="group flex flex-col sm:flex-row items-center gap-6 border border-slate-100 dark:border-slate-800 rounded-3xl p-5 bg-white dark:bg-[#151923] shadow-sm hover:shadow-md dark:hover:shadow-slate-900/50 transition-all duration-300"
+            >
+              <!-- img  -->
+              <div class="flex flex-col items-center gap-3 shrink-0">
+                <div
+                  class="w-32 h-40 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center border border-slate-100 dark:border-slate-700 overflow-hidden group-hover:scale-[1.02] transition-transform duration-300"
+                >
+                  <img
+                    [src]="item.product.imageCover"
+                    [alt]="item.product.title"
+                    class="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal dark:bg-white/5 dark:rounded-xl"
+                  />
+                </div>
+                <span
+                  class="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1.5 border border-emerald-100 dark:border-emerald-800"
+                >
+                  <i class="fa-solid fa-circle-check text-[8px]"></i> In Stock
+                </span>
+              </div>
+
+              <!-- product details  -->
+              <div class="flex-1 w-full text-center sm:text-left">
+                <h3
+                  class="font-bold text-xl text-slate-900 dark:text-gray-100 mb-1.5 line-clamp-1 hover:text-emerald-600 transition-colors cursor-pointer"
+                  [routerLink]="['/details', item.product._id, item.product.slug]"
+                >
+                  {{ item.product.title }}
+                </h3>
+                <div
+                  class="flex flex-wrap items-center justify-center sm:justify-start gap-3 text-sm text-slate-500 dark:text-slate-400"
+                >
+                  <span
+                    [routerLink]="['/products']"
+                    [queryParams]="{
+                      category: item.product.category._id,
+                      name: item.product.category.name,
+                    }"
+                    class="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-lg text-xs font-bold hover:bg-emerald-100 transition-colors cursor-pointer"
+                  >
+                    {{ item.product.category.name }}
+                  </span>
+                  <span class="text-slate-200 hidden sm:block">•</span>
+                  <span class="text-xs font-medium text-slate-400"
+                    >ID: {{ item.product._id.slice(-6).toUpperCase() }}</span
+                  >
+                </div>
+                <div class="mt-4 flex items-baseline gap-1">
+                  <span class="font-black text-emerald-600 text-2xl">{{ item.price }}</span>
+                  <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">EGP</span>
+                  <span class="text-xs text-slate-400 font-normal ml-2">/ unit</span>
+                </div>
+              </div>
+
+              <!-- count & remove  -->
+              <div
+                class="flex flex-row sm:flex-col items-center justify-between sm:justify-center gap-6 w-full sm:w-auto p-4 sm:p-0 bg-slate-50 dark:bg-slate-800/50 sm:bg-transparent sm:dark:bg-transparent rounded-2xl"
+              >
+                <div class="flex flex-col items-center gap-4">
+                  <div
+                    class="flex items-center bg-white dark:bg-[#151923] border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden shadow-sm"
+                  >
+                    <button
+                      (click)="updateCount(item.product._id, item.count - 1)"
+                      class="w-10 h-10 flex items-center justify-center text-slate-400 hover:bg-slate-50 hover:text-red-500 transition-all focus:outline-none"
+                    >
+                      <i class="fa-solid fa-minus text-xs"></i>
+                    </button>
+
+                    <span class="w-10 text-center font-bold text-slate-800 dark:text-gray-100 text-lg">{{
+                      item.count
+                    }}</span>
+
+                    <button
+                      (click)="updateCount(item.product._id, item.count + 1)"
+                      class="w-10 h-10 flex items-center justify-center bg-emerald-600 text-white hover:bg-emerald-700 transition-all focus:outline-none"
+                    >
+                      <i class="fa-solid fa-plus text-xs"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-4">
+                  <div class="text-right min-w-[6.25rem]">
+                    <div
+                      class="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1"
+                    >
+                      Total
+                    </div>
+                    <div class="font-black text-xl text-slate-900 dark:text-gray-100 leading-none me-4">
+                      {{ item.price * item.count }}
+                      <span class="text-[10px] font-bold text-slate-400">EGP</span>
+                    </div>
+                  </div>
+
+                  <button
+                    (click)="removeItem(item.product._id)"
+                    class="w-12 h-12 flex items-center justify-center bg-red-50 dark:bg-red-900/20 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all duration-300 border border-red-100 dark:border-red-800 group/del"
+                  >
+                    <i
+                      class="fa-regular fa-trash-can text-lg group-hover/del:scale-110 transition-transform"
+                    ></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          }
+
+          <!-- Actions -->
+          <div
+            class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-slate-200 dark:border-slate-700"
+          >
+            <button
+              routerLink="/shop"
+              class="group w-full sm:w-auto px-6 py-3.5 bg-white text-emerald-600 border-2 border-emerald-100 rounded-2xl font-bold hover:bg-emerald-50 hover:border-emerald-200 transition-all duration-300 flex items-center justify-center gap-3 shadow-sm"
+            >
+              <i class="fa-solid fa-arrow-left transition-transform group-hover:-translate-x-1"></i>
+              Continue Shopping
+            </button>
+            <button
+              (click)="clearAll()"
+              class="w-full sm:w-auto px-6 py-3.5 text-slate-400 hover:text-red-500 font-bold rounded-2xl hover:bg-red-50 transition-all duration-300 flex items-center justify-center gap-2 group"
+            >
+              <i class="fa-solid fa-trash-can text-sm group-hover:shake"></i>
+              Clear Shopping Cart
+            </button>
+          </div>
+        </div>
+
+        <!-- !---------------------- Right side  !---------------------- -->
+        <div class="lg:col-span-4 sticky top-24">
+          <div
+            class="bg-white dark:bg-[#151923] rounded-3xl border border-slate-100 dark:border-slate-800 overflow-hidden shadow-xl shadow-slate-200/50 dark:shadow-slate-900/50"
+          >
+            <div class="bg-emerald-600 text-white p-6 relative overflow-hidden">
+              <div
+                class="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-2xl"
+              ></div>
+              <div class="relative z-10">
+                <div class="flex items-center gap-3 font-bold text-xl mb-1">
+                  <i class="fa-solid fa-shield-check text-emerald-200"></i> Order Summary
+                </div>
+                <div class="text-emerald-100 text-sm font-medium opacity-90">
+                  Subtotal ({{ totalItems() }} items)
+                </div>
+              </div>
+            </div>
+
+            <div class="p-8">
+              <div class="space-y-4 mb-8">
+                <div class="flex justify-between items-center text-slate-500 font-medium">
+                  <span>Subtotal ({{ totalItems() }} items)</span>
+                  <span class="text-slate-900 font-bold">{{ cartDetails()?.totalCartPrice }} EGP</span>
+                </div>
+                <div class="flex justify-between items-center text-slate-500 font-medium text-xs">
+                  <span>Shipping</span>
+                  <span class="text-emerald-600 font-bold">Calculated at checkout</span>
+                </div>
+                <div class="h-px bg-slate-100 my-2"></div>
+                <div class="flex justify-between items-end">
+                  <div>
+                    <span
+                      class="block text-slate-400 text-xs font-bold uppercase tracking-widest mb-1"
+                      >Estimated Total</span
+                    >
+                    <span class="text-3xl font-black text-slate-900">{{
+                      cartDetails()?.totalCartPrice
+                    }}</span>
+                  </div>
+                  <span class="text-lg font-bold text-slate-400 mb-1">EGP</span>
+                </div>
+              </div>
+
+              <div
+                class="flex items-start gap-3 bg-blue-50/50 text-blue-700 p-4 rounded-2xl mb-8 border border-blue-100/50"
+              >
+                <i class="fa-solid fa-circle-info mt-1 text-lg"></i>
+                <p class="text-sm font-medium leading-relaxed">
+                  Shipping and taxes are calculated during the secure checkout process.
+                </p>
+              </div>
+
+              @if (authService.isLogged()) {
+                <button
+                  [routerLink]="['/checkout' , cartDetails()._id]"
+                  class="w-full py-4 bg-emerald-600 text-white font-black rounded-2xl hover:bg-emerald-700 active:bg-emerald-800 transition-all duration-300 shadow-lg shadow-emerald-200 flex items-center justify-center gap-3 hover:-translate-y-1"
+                >
+                  Go to Checkout
+                  <i class="fa-solid fa-arrow-right"></i>
+                </button>
+              } @else {
+                <button
+                  routerLink="/login"
+                  class="w-full py-4 bg-emerald-600 text-white font-black rounded-2xl hover:bg-emerald-700 active:bg-emerald-800 transition-all duration-300 shadow-lg shadow-emerald-200 flex items-center justify-center gap-3 hover:-translate-y-1"
+                >
+                  <i class="fa-solid fa-user"></i>
+                  Signin to Checkout
+                </button>
+                <div class="mt-4 text-center">
+                  <p class="text-xs text-slate-500 font-medium">
+                    Don't have an account?
+                    <a routerLink="/register" class="text-emerald-600 font-bold hover:underline cursor-pointer">Sign up</a>
+                  </p>
+                </div>
+              }
+
+              <div class="grid grid-cols-2 gap-4 mt-8 pt-8 border-t border-slate-100">
+                <div class="text-center">
+                  <div
+                    class="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-2"
+                  >
+                    <i class="fa-solid fa-lock text-slate-400 text-sm"></i>
+                  </div>
+                  <span
+                    class="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-tight"
+                    >Secure Payment</span
+                  >
+                </div>
+                <div class="text-center">
+                  <div
+                    class="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-2"
+                  >
+                    <i class="fa-solid fa-rotate-left text-slate-400 text-sm"></i>
+                  </div>
+                  <span
+                    class="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-tight"
+                    >Easy Returns</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <!-- !---------- Empty State  !----------  -->
+      <div
+        class="flex flex-col items-center justify-center py-20 bg-white dark:bg-[#151923] rounded-[2rem] border-2 border-dashed border-slate-100 dark:border-slate-800"
+      >
+        <div
+          class="w-32 h-32 bg-slate-50 text-slate-200 rounded-full flex items-center justify-center mb-8"
+        >
+          <i class="fa-solid fa-cart-shopping text-6xl"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-slate-800 dark:text-gray-100 mb-3">Your cart is empty</h2>
+        <p class="text-slate-500 dark:text-slate-400 mb-10 max-w-sm text-center leading-relaxed">
+          Looks like you haven't added any items to your cart yet. Explore our shop to find
+          something you love!
+        </p>
+        <button
+          routerLink="/shop"
+          class="px-10 py-4 bg-emerald-600 text-white font-bold rounded-2xl hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100 flex items-center gap-3"
+        >
+          Start Shopping
+          <i class="fa-solid fa-arrow-right-long"></i>
+        </button>
+      </div>
+    }
+  </div>
+</section>

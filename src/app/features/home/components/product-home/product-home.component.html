@@ -1,0 +1,21 @@
+<app-h2-sections-home mainText="Featured" highlightText="Products"></app-h2-sections-home>
+<app-products-shared [limit]="10"></app-products-shared>
+
+<div class="container mx-auto px-4 flex justify-center mt-8 mb-12">
+  <a
+    [routerLink]="['/shop']"
+    class="group inline-flex items-center gap-3 bg-white dark:bg-[#151923] border-2 border-emerald-600 text-emerald-600 px-8 py-3.5 rounded-full font-semibold text-base hover:bg-emerald-600 hover:text-white transition-all duration-300 shadow-sm hover:shadow-lg hover:shadow-emerald-100 dark:hover:shadow-emerald-900/30 active:scale-95"
+  >
+    <span>View All Products</span>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+    </svg>
+  </a>
+</div>

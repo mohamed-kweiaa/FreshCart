@@ -1,0 +1,37 @@
+<app-hero
+  [title]="'All Categories'"
+  [subtitle]="'Browse our wide range of product categories'"
+  [icon]="'fa-layer-group'"
+  [breadcrumbs]="categoriesBreadcrumbs"
+  [gradient]="'from-emerald-600 via-emerald-500 to-emerald-400'"
+></app-hero>
+
+@if (categoriesList().length > 0) {
+  <section class="py-12">
+    <div class="container mx-auto px-4">
+      <div class="mt-6 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+        @for (category of categoriesList(); track category._id) {
+          <a
+          [routerLink]="['/categories', category._id, category.slug]"
+          class="shadow-sm hover:shadow-md transition group cursor-pointer"
+          >
+            <div class="group bg-white dark:bg-[#151923] rounded-2xl border border-gray-100 dark:border-slate-800 p-4 sm:p-6 shadow-sm hover:shadow-xl dark:hover:shadow-slate-900/50 hover:border-primary-200 dark:hover:border-emerald-800 transition-all duration-300 hover:-translate-y-1">
+              <div class="aspect-square rounded-xl overflow-hidden bg-gray-50 dark:bg-slate-800 mb-4">
+                <img
+                  [src]="category.image"
+                  [alt]="category.name"
+                  class="size-58 object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+              </div>
+              <h3 class="font-bold text-gray-900 dark:text-gray-100 text-center group-hover:text-primary transition-colors">{{ category.name }}</h3>
+              <div class="flex justify-center mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <span class="text-xs text-primary-600 flex items-center gap-1 group-hover:text-primary transition-colors">View Subcategories</span>
+              </div>
+
+            </div>
+          </a>
+        }
+      </div>
+    </div>
+  </section>
+}

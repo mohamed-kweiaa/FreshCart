@@ -1,0 +1,108 @@
+<app-hero
+  [title]="filterName() || 'Products'"
+  [subtitle]="'Refine your selection and find the perfect match'"
+  [icon]="heroIcon()"
+  [breadcrumbs]="heroBreadcrumbs()"
+  [gradient]="filterType() === 'brand' ? 'from-violet-600 via-indigo-500 to-purple-400' : 'from-emerald-600 via-emerald-500 to-emerald-400'"
+></app-hero>
+
+<div class="container mx-auto px-4 py-12">
+  @if (isLoading()) {
+    <app-loading [loadingText]="'Loading Products...'"></app-loading>
+  } @else {
+    <div class="flex flex-wrap items-center gap-3 mb-6">
+      <span class="flex items-center gap-1.5 text-sm text-gray-500 font-medium">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-4 h-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
+          />
+        </svg>
+        Active Filters:
+      </span>
+
+      @if (filterName()) {
+        <span
+          class="inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-full text-sm font-medium"
+        >
+          <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
+          {{ filterName() }}
+          <a
+            [routerLink]="['/shop']"
+            class="ml-1 hover:text-emerald-900 transition-colors cursor-pointer"
+            aria-label="Remove filter"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-3.5 h-3.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </a>
+        </span>
+      }
+
+      <a
+        [routerLink]="['/shop']"
+        class="text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors cursor-pointer font-medium"
+        >Clear all</a
+      >
+
+      @if (filterType() !== 'brand' && siblingSubcategories().length > 0) {
+        <div class="ml-auto">
+          <select
+            [ngModel]="filterType() === 'category' ? 'all' : selectedSubcategoryId()"
+            (ngModelChange)="onSubcategoryChange($event)"
+            class="bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 text-gray-700 dark:text-gray-200 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 px-3 py-2 cursor-pointer shadow-sm"
+          >
+            <option value="all">All {{ filterName() }}</option>
+            @for (sub of siblingSubcategories(); track sub._id) {
+              <option [value]="sub._id">{{ sub.name }}</option>
+            }
+          </select>
+        </div>
+      }
+    </div>
+
+    <div class="mb-6">
+      <p class="text-sm text-gray-500">
+        Showing {{ productsList().length }} product{{ productsList().length !== 1 ? 's' : '' }}
+      </p>
+    </div>
+
+    @if (productsList().length > 0) {
+      <app-products-shared [externalProducts]="productsList()" [compactTitle]="true"></app-products-shared>
+    } @else {
+      <div class="flex flex-col items-center justify-center py-20 text-gray-400">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-16 h-16 mb-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1.5"
+            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+          />
+        </svg>
+        <p class="text-xl font-medium">No products found</p>
+        <p class="text-sm mt-2">There are no products in this {{ filterType() }} yet.</p>
+      </div>
+    }
+  }
+</div>

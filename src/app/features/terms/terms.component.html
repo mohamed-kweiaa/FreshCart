@@ -1,0 +1,69 @@
+<app-hero
+  [title]="'Terms of Service'"
+  [subtitle]="'Please read these terms carefully before using our service'"
+  [icon]="'fa-file-contract'"
+  [breadcrumbs]="termsBreadcrumbs"
+  [gradient]="'from-emerald-600 via-emerald-500 to-emerald-400'"
+></app-hero>
+
+<div class="bg-gray-50 dark:bg-[#0c0f17] min-h-screen py-16 px-6 transition-colors duration-300">
+  <div class="max-w-4xl mx-auto">
+    <div class="bg-white dark:bg-[#151923] rounded-3xl shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden">
+      <!-- Content Area -->
+      <div class="p-8 md:p-12 space-y-10 text-gray-700 dark:text-slate-400 leading-relaxed">
+        <section>
+          <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-3">
+            <span class="w-1.5 h-6 bg-emerald-500 rounded-full"></span>
+            1. Acceptance of Terms
+          </h2>
+          <p>
+            By accessing and using FreshCart, you agree to be bound by these Terms of Service. If you do not agree to all of these terms, do not use our services. We reserve the right to modify these terms at any time, and your continued use of the platform signifies your acceptance of any changes.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-3">
+            <span class="w-1.5 h-6 bg-emerald-500 rounded-full"></span>
+            2. User Accounts
+          </h2>
+          <p class="mb-4">To use most features of FreshCart, you must register for an account. You are responsible for:</p>
+          <ul class="list-disc pl-6 space-y-2">
+             <li>Maintaining the confidentiality of your account credentials.</li>
+             <li>All activities that occur under your account.</li>
+             <li>Providing accurate and complete information during registration.</li>
+             <li>Notifying us immediately of any unauthorized use of your account.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-3">
+            <span class="w-1.5 h-6 bg-emerald-500 rounded-full"></span>
+            3. Ordering & Payments
+          </h2>
+          <p>
+            All orders placed through FreshCart are subject to product availability and acceptance by us. Prices are subject to change without notice. Payments are processed securely, and you agree to provide valid payment information for all purchases made on our platform.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-3">
+            <span class="w-1.5 h-6 bg-emerald-500 rounded-full"></span>
+            4. Limitation of Liability
+          </h2>
+          <p>
+            FreshCart and its affiliates will not be liable for any indirect, incidental, special, or consequential damages resulting from the use or the inability to use the service or for cost of procurement of substitute goods and services.
+          </p>
+        </section>
+
+        <div class="pt-8 border-t border-gray-100 dark:border-slate-800 mt-12 flex flex-col md:flex-row items-center justify-between gap-6">
+           <div class="text-sm text-gray-500 italic">
+             Last Update: April 16, 2026
+           </div>
+           <a routerLink="/" class="px-6 py-2.5 bg-gray-900 dark:bg-slate-700 text-white rounded-xl text-sm font-bold hover:bg-gray-800 dark:hover:bg-slate-600 transition-colors">
+              Accept & Return Home
+           </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

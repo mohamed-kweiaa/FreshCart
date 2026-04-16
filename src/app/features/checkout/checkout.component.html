@@ -1,0 +1,236 @@
+<section>
+  <div class="max-w-6xl py-10 mx-auto">
+    <!-- ? ------------- header information  -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-3">
+          <span
+            class="bg-brand-700 text-white w-9 h-9 flex items-center justify-center rounded-md text-lg"
+          >
+            <i class="fa-solid fa-receipt"></i>
+          </span>
+          Complete Your Order
+        </h1>
+        <p class="text-gray-500 dark:text-slate-400 mt-1">Review your items and complete your purchase</p>
+      </div>
+      <a
+        routerLink="/cart"
+        class="text-brand-600 hover:text-brand-800 font-medium flex items-center gap-2 transition-colors"
+      >
+        <i class="fa-solid fa-arrow-left-long"></i>
+        Back to Cart
+      </a>
+    </div>
+
+    <!-- ? ------------- Form   -->
+    <div class="space-y-6">
+      <div class="bg-white dark:bg-[#151923] rounded-xl shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden">
+        <div class="p-6">
+          <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()" class="space-y-5">
+            <div>
+              <!-- city  -->
+              <div>
+                <label for="city" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-100"
+                  >City <span class="text-red-500">*</span></label
+                >
+                <div class="relative">
+                  <div
+                    class="absolute inset-y-0 inset-s-0 flex items-center ps-3.5 pointer-events-none text-gray-400"
+                  >
+                    <i class="fa-solid fa-city"></i>
+                  </div>
+                  <input
+                    formControlName="city"
+                    type="text"
+                    id="city"
+                    class="bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 text-gray-900 dark:text-gray-200 text-sm rounded-lg focus:ring-brand-500 focus:border-brand-500 block w-full ps-10 p-3"
+                    placeholder="e.g. Cairo, Alexandria, Giza"
+                  />
+                </div>
+                <!-- Validation for City -->
+                @let cityErrors = checkoutForm.get('city')?.errors;
+                @if (cityErrors && (checkoutForm.get('city')?.dirty || checkoutForm.get('city')?.touched)) {
+                  <div class="text-red-600 text-xs mt-1 font-medium ms-1 mt-2 flex items-center gap-1">
+                    <i class="fa-solid fa-circle-exclamation"></i> City is required.
+                  </div>
+                }
+              </div>
+
+              <!-- Street Address   -->
+              <div class="mt-5">
+                <label for="details" class="block mb-2 text-sm font-medium text-gray-900"
+                  >Street Address <span class="text-red-500">*</span></label
+                >
+                <div class="relative">
+                  <div
+                    class="absolute inset-y-0 inset-s-0 flex items-start pt-3.5 ps-3.5 pointer-events-none text-gray-400"
+                  >
+                    <i class="fa-solid fa-location-dot"></i>
+                  </div>
+                  <textarea
+                    formControlName="details"
+                    id="details"
+                    rows="3"
+                    class="bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 text-gray-900 dark:text-gray-200 text-sm rounded-lg focus:ring-brand-500 focus:border-brand-500 block w-full ps-10 p-3"
+                    placeholder="Street name, building number, floor, apartment..."
+                  ></textarea>
+                </div>
+                <!-- Validation for Address -->
+                @let detailsErrors = checkoutForm.get('details')?.errors;
+                @if (detailsErrors && (checkoutForm.get('details')?.dirty || checkoutForm.get('details')?.touched)) {
+                  <div class="text-red-600 text-xs mt-1 font-medium ms-1 mt-2 flex items-center gap-1">
+                    <i class="fa-solid fa-circle-exclamation"></i> Street Address is required.
+                  </div>
+                }
+              </div>
+
+              <!-- phone  -->
+              <div class="mt-5">
+                <label for="phone" class="block mb-2 text-sm font-medium text-gray-900"
+                  >Phone Number <span class="text-red-500">*</span></label
+                >
+                <div class="relative">
+                  <div
+                    class="absolute inset-y-0 inset-s-0 flex items-center ps-3.5 pointer-events-none text-gray-400"
+                  >
+                    <i class="fa-solid fa-phone"></i>
+                  </div>
+                  <input
+                    formControlName="phone"
+                    type="tel"
+                    id="phone"
+                    class="bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 text-gray-900 dark:text-gray-200 text-sm rounded-lg focus:ring-brand-500 focus:border-brand-500 block w-full ps-10 p-3"
+                    placeholder="01xxxxxxxxx"
+                  />
+                  <div
+                    class="absolute inset-y-0 inset-e-0 flex items-center pe-3 pointer-events-none"
+                  >
+                    <span class="text-xs text-gray-400">Egyptian numbers only</span>
+                  </div>
+                </div>
+                <!-- Validation for Phone -->
+                @let phoneErrors = checkoutForm.get('phone')?.errors;
+                @if (phoneErrors && (checkoutForm.get('phone')?.dirty || checkoutForm.get('phone')?.touched)) {
+                  <div class="text-red-600 text-xs mt-1 font-medium ms-1 mt-2">
+                    <ul class="flex flex-col gap-1">
+                      @if (phoneErrors['required']) {
+                        <li class="flex items-center gap-1"><i class="fa-solid fa-circle-exclamation"></i> Phone is required.</li>
+                      } @else if (phoneErrors['pattern']) {
+                        <li class="flex items-center gap-1"><i class="fa-solid fa-circle-exclamation"></i> Must be a valid Egyptian phone number (e.g. 01012345678).</li>
+                      }
+                    </ul>
+                  </div>
+                }
+              </div>
+
+              <!-- buttons payment  -->
+              <div class="group grid pt-8 md:grid-cols-3 gap-8">
+                <div class="md:col-span-2 space-y-6">
+                  <div class="space-y-4">
+                    <label for="payment-cod" class="block relative">
+                      <input
+                        formControlName="payment_method"
+                        type="radio"
+                        id="payment-cod"
+                        name="payment_method"
+                        value="cash"
+                        class="peer sr-only"
+                      />
+
+                      <div
+                        class="p-5 bg-white dark:bg-[#151923] border-2 border-gray-200 dark:border-slate-700 rounded-2xl cursor-pointer transition-all duration-200 ease-in-out peer-checked:border-green-500 peer-checked:bg-green-50/50 dark:peer-checked:bg-green-900/20 hover:border-green-300"
+                      >
+                        <div class="flex items-center justify-between gap-4">
+                          <div class="flex items-center gap-4 grow">
+                            <div
+                              class="w-14 h-14 bg-green-100 text-green-500 rounded-xl flex items-center justify-center transition-colors peer-checked:bg-green-500 peer-checked:text-white"
+                            >
+                              <i class="fas fa-money-bill-wave text-xl"></i>
+                            </div>
+                            <div>
+                              <h3 class="font-bold text-lg text-green-800">Cash on Delivery</h3>
+                              <p class="text-sm text-gray-500">
+                                Pay when your order arrives at your doorstep
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </label>
+
+                    <label for="payment-card" class="block relative">
+                      <input
+                        formControlName="payment_method"
+                        type="radio"
+                        id="payment-card"
+                        name="payment_method"
+                        value="card"
+                        class="peer sr-only"
+                      />
+
+                      <div
+                        class="p-5 bg-white dark:bg-[#151923] border-2 border-gray-200 dark:border-slate-700 rounded-2xl cursor-pointer transition-all duration-200 ease-in-out peer-checked:border-blue-500 peer-checked:bg-blue-50/50 dark:peer-checked:bg-blue-900/20 hover:border-blue-300"
+                      >
+                        <div class="flex items-center justify-between gap-4">
+                          <div class="flex items-center gap-4 grow">
+                            <div
+                              class="w-14 h-14 bg-gray-100 text-gray-400 rounded-xl flex items-center justify-center transition-colors peer-checked:bg-blue-500 peer-checked:text-white"
+                            >
+                              <i class="fas fa-credit-card text-xl"></i>
+                            </div>
+                            <div>
+                              <h3 class="font-bold text-lg text-gray-900 dark:text-gray-100">Pay Online</h3>
+                              <p class="text-sm text-gray-500">
+                                Secure payment with Credit/Debit Card via Stripe
+                              </p>
+                              <div class="flex items-center gap-2 mt-1">
+                                <i class="fab fa-cc-visa text-2xl text-blue-800"></i>
+                                <i class="fab fa-cc-mastercard text-2xl text-orange-600"></i>
+                                <i class="fab fa-cc-amex text-2xl text-blue-500"></i>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- 2 buttons  -->
+                <div
+                  class="md:col-span-1 p-6 bg-white dark:bg-[#1e2330] border border-gray-100 dark:border-slate-800 rounded-2xl shadow-sm h-fit sticky top-8 space-y-5"
+                >
+                  <div class="pt-2">
+                    <button
+                      [disabled]="isLoading()"
+                      type="submit"
+                      class="w-full py-3.5 px-4 rounded-lg bg-green-600 text-white font-semibold text-sm flex items-center justify-center gap-2 hover:bg-green-700 disabled:bg-gray-400 transition-colors hidden group-has-[#payment-cod:checked]:flex"
+                    >
+                      @if (isLoading()) {
+                        <i class="fa-solid fa-spinner fa-spin"></i> Processing...
+                      } @else {
+                        <i class="fas fa-shopping-bag"></i> Place Order
+                      }
+                    </button>
+
+                    <button
+                      [disabled]="isLoading()"
+                      type="submit"
+                      class="w-full py-3.5 px-4 rounded-lg bg-blue-600 text-white font-semibold text-sm flex items-center justify-center gap-2 hover:bg-blue-700 disabled:bg-gray-400 transition-colors hidden group-has-[#payment-card:checked]:flex"
+                    >
+                      @if (isLoading()) {
+                        <i class="fa-solid fa-spinner fa-spin"></i> Processing...
+                      } @else {
+                        <i class="fas fa-shield-alt"></i> Proceed to Payment
+                      }
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

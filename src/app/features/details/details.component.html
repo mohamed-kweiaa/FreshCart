@@ -1,0 +1,346 @@
+@if (productDetails()) {
+  @let product = productDetails()!;
+  <section class="p-4 md:p-8">
+    <div class="container max-w-7xl mx-auto">
+      
+      <!-- Breadcrumb -->
+      <nav class="flex text-sm text-gray-500 dark:text-slate-400 mb-8 items-center gap-2">
+        <a routerLink="/" class="hover:text-emerald-600 transition-colors inline-flex items-center gap-1">
+          <i class="fas fa-home text-xs"></i> Home
+        </a>
+        <i class="fas fa-chevron-right text-[10px]"></i>
+        <a [routerLink]="['/products']" [queryParams]="{ category: product.category._id, name: product.category.name }" class="hover:text-emerald-600 transition-colors">
+          {{product.category.name}}
+        </a>
+        <i class="fas fa-chevron-right text-[10px]"></i>
+        <span class="text-gray-900 dark:text-gray-100 font-medium">{{product.title}}</span>
+      </nav>
+  
+      <!-- Main Content -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 mb-16">
+        
+        <!-- Left: Image Gallery -->
+        <div class="space-y-4">
+          <!-- Main Image -->
+          <div class="bg-gray-50 dark:bg-[#151923] rounded-2xl overflow-hidden border border-gray-100 dark:border-slate-800 flex items-center justify-center p-8 min-h-[400px]">
+            <img [src]="activeImage()" [alt]="product.title" class="max-w-full max-h-[500px] object-contain drop-shadow-md transition-all duration-300"/>
+          </div>
+          
+          <!-- Thumbnails -->
+          @if (product.images && product.images.length > 0) {
+            <div class="grid grid-cols-4 gap-4">
+              @for (img of product.images; track img) {
+                <div 
+                  (click)="changeImage(img)"
+                  [class]="'cursor-pointer rounded-xl overflow-hidden border-2 transition-all p-2 bg-gray-50 dark:bg-[#151923] aspect-square flex justify-center items-center ' + (activeImage() === img ? 'border-emerald-500 ring-2 ring-emerald-100 dark:ring-emerald-900/50' : 'border-gray-100 dark:border-slate-800 hover:border-gray-300 dark:hover:border-slate-600')">
+                  <img [src]="img" [alt]="product.title" class="max-w-full max-h-full object-contain" />
+                </div>
+              }
+            </div>
+          }
+        </div>
+  
+        <!-- Right: Product Info -->
+        <div class="flex flex-col gap-6">
+          <div class="space-y-4">
+            <!-- Tags -->
+            <div class="flex gap-2">
+              <span class="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-xs px-3 py-1.5 rounded-full font-medium">{{product.category.name}}</span>
+              <span class="bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300 text-xs px-3 py-1.5 rounded-full font-medium">{{product.brand.name}}</span>
+            </div>
+  
+            <!-- Title -->
+            <h1 class="text-3xl lg:text-4xl font-extrabold text-slate-900 dark:text-gray-100 leading-tight">{{product.title}}</h1>
+            
+            <!-- Reviews -->
+            <div class="flex items-center gap-3">
+              <div class="text-lg text-amber-400 font-medium border-r border-gray-200 dark:border-slate-700 pr-3">
+                <app-star-rating [rating]="product.ratingsAverage" [maxRating]="5"></app-star-rating>
+              </div>
+              <span class="text-sm text-gray-500 dark:text-slate-400 font-medium">{{product.ratingsAverage.toFixed(1)}} ({{product.ratingsQuantity}} reviews)</span>
+            </div>
+  
+            <!-- Price Block -->
+            <div class="flex items-center gap-4 pt-2">
+              <p class="text-4xl font-black text-slate-900 dark:text-gray-100">{{product.price}} EGP</p>
+              @if (true) { <!-- Simulate discount -->
+                <p class="text-xl text-gray-400 line-through font-medium">{{(product.price * 1.5).toFixed(0)}} EGP</p>
+                <span class="bg-red-500 text-white text-xs font-bold px-3 py-1.5 rounded-full">Save 33%</span>
+              }
+            </div>
+            
+            <!-- Stock Status -->
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center gap-1.5 text-sm font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-3 py-1 rounded-full">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span> In Stock
+              </span>
+            </div>
+          </div>
+  
+          <!-- Description -->
+          <p class="text-gray-600 dark:text-slate-400 text-[15px] leading-relaxed border-t border-b border-gray-100 dark:border-slate-800 py-6">
+            {{product.description}}
+          </p>
+  
+          <!-- Actions Block -->
+          <div class="space-y-6">
+            <!-- Quantity row -->
+            <div class="flex flex-col sm:flex-row gap-6 sm:items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Quantity</p>
+                <div class="inline-flex items-center border border-gray-200 dark:border-slate-700 rounded-xl bg-white dark:bg-[#151923] p-1">
+                  <button (click)="decreaseQuantity()" class="w-10 h-10 flex text-gray-500 dark:text-gray-400 items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors">
+                    <i class="fas fa-minus text-xs"></i>
+                  </button>
+                  <span class="w-12 text-center font-bold text-gray-900 dark:text-gray-100">{{quantity()}}</span>
+                  <button (click)="increaseQuantity()" class="w-10 h-10 flex text-gray-500 dark:text-gray-400 items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors">
+                    <i class="fas fa-plus text-xs"></i>
+                  </button>
+                </div>
+                <span class="text-xs text-gray-500 dark:text-slate-400 ml-3">{{product.quantity}} available</span>
+              </div>
+            </div>
+  
+            <!-- Total Price -->
+            <div class="flex justify-between items-center bg-gray-50 dark:bg-slate-800/50 px-5 py-4 rounded-xl border border-gray-100 dark:border-slate-700">
+              <span class="text-gray-500 dark:text-slate-400 font-medium">Total Price:</span>
+              <span class="text-2xl font-black text-emerald-600">{{totalPrice().toFixed(2)}} EGP</span>
+            </div>
+  
+            <!-- Main Buttons -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+              <button
+                (click)="addToCart()"
+                class="w-full cursor-pointer bg-emerald-500 text-white font-bold py-4 rounded-xl hover:bg-emerald-600 transition-all flex items-center justify-center gap-3 shadow-lg shadow-emerald-200/50 dark:shadow-emerald-900/30"
+              >
+                <i class="fas fa-cart-arrow-down text-lg"></i> Add to Cart
+              </button>
+              <button
+                (click)="buyNow()"
+                class="w-full cursor-pointer bg-slate-900 dark:bg-slate-700 text-white font-bold py-4 rounded-xl hover:bg-slate-800 dark:hover:bg-slate-600 transition-all flex items-center justify-center gap-3 shadow-lg shadow-slate-900/20"
+              >
+                <i class="fas fa-bolt text-lg"></i> Buy Now
+              </button>
+            </div>
+  
+            <!-- Wishlist & Share -->
+            <div class="flex items-center justify-between pt-2 border-t border-gray-100 dark:border-slate-800">
+              <button
+                (click)="toggleWishlist()"
+                [class]="'cursor-pointer flex items-center gap-2 font-medium transition-colors ' + (wishlistService.isInWishlist(product.id || product._id) ? 'text-red-500' : 'text-gray-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-gray-100')"
+              >
+                <i [class]="(wishlistService.isInWishlist(product.id || product._id) ? 'fas fa-heart' : 'far fa-heart') + ' text-lg'"></i>
+                {{ wishlistService.isInWishlist(product.id || product._id) ? 'Remove from Wishlist' : 'Add to Wishlist' }}
+              </button>
+              
+              <button class="cursor-pointer flex items-center gap-2 font-medium text-gray-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-gray-100 transition-colors">
+                <i class="fas fa-share-nodes text-lg"></i> Share
+              </button>
+            </div>
+          </div>
+  
+          <!-- Trust Badges -->
+          <div class="grid grid-cols-3 gap-4 mt-4 bg-gray-50/50 dark:bg-slate-800/30 p-4 rounded-xl border border-gray-100 dark:border-slate-800">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
+                <i class="fas fa-truck-fast"></i>
+              </div>
+              <div>
+                <p class="text-xs font-bold text-gray-900 dark:text-gray-100">Free Delivery</p>
+                <p class="text-[10px] text-gray-500">Orders over $50</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
+                <i class="fas fa-rotate-left"></i>
+              </div>
+              <div>
+                <p class="text-xs font-bold text-gray-900 dark:text-gray-100">30 Days Return</p>
+                <p class="text-[10px] text-gray-500">Money back</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
+                <i class="fas fa-shield-halved"></i>
+              </div>
+              <div>
+                <p class="text-xs font-bold text-gray-900 dark:text-gray-100">Secure Payment</p>
+                <p class="text-[10px] text-gray-500">100% Protected</p>
+              </div>
+            </div>
+          </div>
+  
+        </div>
+      </div>
+  
+      <!-- Details Tabs Area -->
+      <div class="mb-16">
+        <!-- Tab Headers -->
+        <div class="border-b border-gray-200 dark:border-slate-800 flex gap-8">
+          <button 
+            (click)="activeTab.set('details')"
+            [class]="'pb-4 relative font-medium transition-colors text-sm sm:text-base ' + (activeTab() === 'details' ? 'text-emerald-600 border-b-2 border-emerald-600' : 'text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-gray-100')"
+          >
+            <i class="fas fa-file-lines mr-2"></i> Product Details
+          </button>
+          <button 
+            (click)="activeTab.set('reviews')"
+            [class]="'pb-4 relative font-medium transition-colors text-sm sm:text-base ' + (activeTab() === 'reviews' ? 'text-emerald-600 border-b-2 border-emerald-600' : 'text-gray-500 hover:text-gray-900')"
+          >
+            <i class="fas fa-star mr-2"></i> Reviews ({{product.ratingsQuantity}})
+          </button>
+          <button 
+            (click)="activeTab.set('shipping')"
+            [class]="'pb-4 relative font-medium transition-colors text-sm sm:text-base ' + (activeTab() === 'shipping' ? 'text-emerald-600 border-b-2 border-emerald-600' : 'text-gray-500 hover:text-gray-900')"
+          >
+            <i class="fas fa-truck mr-2"></i> Shipping & Returns
+          </button>
+        </div>
+  
+        <!-- Tab Content -->
+        <div class="py-8">
+          @if (activeTab() === 'details') {
+            <div class="animate-fadeIn">
+              <h3 class="text-lg font-bold text-slate-900 dark:text-gray-100 mb-4">About this Product</h3>
+              <p class="text-gray-600 dark:text-slate-400 mb-8 max-w-3xl leading-relaxed">{{product.description}}</p>
+  
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8 bg-gray-50 dark:bg-slate-800/30 p-6 sm:p-8 rounded-2xl border border-gray-100 dark:border-slate-800">
+                <div>
+                  <h4 class="text-sm font-bold text-slate-900 dark:text-gray-100 mb-4 tracking-wide uppercase">Product Information</h4>
+                  <ul class="space-y-3">
+                    <li class="flex justify-between items-center text-sm border-b border-gray-200 dark:border-slate-700 pb-2">
+                      <span class="text-gray-500 dark:text-slate-400">Category</span>
+                      <span class="font-medium text-gray-900 dark:text-gray-200">{{product.category.name}}</span>
+                    </li>
+                    <li class="flex justify-between items-center text-sm border-b border-gray-200 dark:border-slate-700 pb-2">
+                      <span class="text-gray-500 dark:text-slate-400">Subcategory</span>
+                      <span class="font-medium text-gray-900 dark:text-gray-200">{{product.subcategory[0]?.name || 'N/A'}}</span>
+                    </li>
+                    <li class="flex justify-between items-center text-sm border-b border-gray-200 dark:border-slate-700 pb-2">
+                      <span class="text-gray-500 dark:text-slate-400">Brand</span>
+                      <span class="font-medium text-gray-900 dark:text-gray-200">{{product.brand.name}}</span>
+                    </li>
+                    <li class="flex justify-between items-center text-sm pb-2">
+                      <span class="text-gray-500">Items Sold</span>
+                      <span class="font-medium text-gray-900 dark:text-gray-200">{{product.sold}}+ sold</span>
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 class="text-sm font-bold text-slate-900 dark:text-gray-100 mb-4 tracking-wide uppercase">Key Features</h4>
+                  <ul class="space-y-3">
+                    <li class="flex items-center gap-3 text-sm text-gray-700 dark:text-gray-300">
+                      <i class="fas fa-check text-emerald-500"></i> Premium Quality Product
+                    </li>
+                    <li class="flex items-center gap-3 text-sm text-gray-700 dark:text-gray-300">
+                      <i class="fas fa-check text-emerald-500"></i> 100% Authentic Guarantee
+                    </li>
+                    <li class="flex items-center gap-3 text-sm text-gray-700 dark:text-gray-300">
+                      <i class="fas fa-check text-emerald-500"></i> Fast & Secure Packaging
+                    </li>
+                    <li class="flex items-center gap-3 text-sm text-gray-700 dark:text-gray-300">
+                      <i class="fas fa-check text-emerald-500"></i> Quality Tested
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          } @else if (activeTab() === 'reviews') {
+            <div class="animate-fadeIn max-w-4xl">
+              <div class="flex flex-col md:flex-row gap-12 items-center">
+                <!-- Overall -->
+                <div class="text-center md:text-left">
+                  <p class="text-6xl font-black text-slate-900 dark:text-gray-100">{{product.ratingsAverage.toFixed(1)}}</p>
+                  <div class="text-xl text-amber-400 my-2">
+                    <app-star-rating [rating]="product.ratingsAverage" [maxRating]="5"></app-star-rating>
+                  </div>
+                  <p class="text-sm text-gray-500">Based on {{product.ratingsQuantity}} reviews</p>
+                </div>
+                
+                <!-- Breakdown -->
+                <div class="flex-1 w-full space-y-3">
+                  @for (r of ratingBreakdown; track r.star) {
+                    <div class="flex items-center gap-4">
+                      <div class="w-16 text-sm text-gray-500 font-medium whitespace-nowrap">{{r.star}} star</div>
+                      <div class="flex-1 h-2.5 bg-gray-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                        <div class="h-full bg-amber-400 rounded-full" [style.width]="r.percentage + '%'"></div>
+                      </div>
+                      <div class="w-10 text-sm text-right text-gray-500 font-medium">{{r.percentage}}%</div>
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+          } @else if (activeTab() === 'shipping') {
+            <div class="animate-fadeIn">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <div class="bg-emerald-50/50 dark:bg-emerald-900/10 p-6 rounded-2xl border border-emerald-100 dark:border-emerald-900/30">
+                  <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-sm"><i class="fas fa-truck-fast"></i></div>
+                    <h4 class="font-bold text-slate-900 dark:text-gray-100">Shipping Information</h4>
+                  </div>
+                  <ul class="space-y-3">
+                    <li class="flex items-start gap-3 text-sm text-gray-700 dark:text-gray-300">
+                      <i class="fas fa-check text-emerald-500 mt-1"></i> Free shipping on orders over $50
+                    </li>
+                    <li class="flex items-start gap-3 text-sm text-gray-700 dark:text-gray-300">
+                      <i class="fas fa-check text-emerald-500 mt-1"></i> Standard delivery: 3-5 business days
+                    </li>
+                    <li class="flex items-start gap-3 text-sm text-gray-700 dark:text-gray-300">
+                      <i class="fas fa-check text-emerald-500 mt-1"></i> Express delivery available (1-2 business days)
+                    </li>
+                    <li class="flex items-start gap-3 text-sm text-gray-700 dark:text-gray-300">
+                      <i class="fas fa-check text-emerald-500 mt-1"></i> Track your order in real-time
+                    </li>
+                  </ul>
+                </div>
+                <div class="bg-emerald-50/50 dark:bg-emerald-900/10 p-6 rounded-2xl border border-emerald-100 dark:border-emerald-900/30">
+                  <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-sm"><i class="fas fa-rotate-left"></i></div>
+                    <h4 class="font-bold text-slate-900 dark:text-gray-100">Returns & Refunds</h4>
+                  </div>
+                  <ul class="space-y-3">
+                    <li class="flex items-start gap-3 text-sm text-gray-700 dark:text-gray-300">
+                      <i class="fas fa-check text-emerald-500 mt-1"></i> 30-day hassle-free returns
+                    </li>
+                    <li class="flex items-start gap-3 text-sm text-gray-700 dark:text-gray-300">
+                      <i class="fas fa-check text-emerald-500 mt-1"></i> Full refund or exchange available
+                    </li>
+                    <li class="flex items-start gap-3 text-sm text-gray-700 dark:text-gray-300">
+                      <i class="fas fa-check text-emerald-500 mt-1"></i> Free return shipping on defective items
+                    </li>
+                    <li class="flex items-start gap-3 text-sm text-gray-700 dark:text-gray-300">
+                      <i class="fas fa-check text-emerald-500 mt-1"></i> Easy online return process
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="bg-gray-50 dark:bg-slate-800/30 flex items-center gap-4 p-5 rounded-2xl border border-gray-100 dark:border-slate-800">
+                <div class="w-12 h-12 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center shrink-0 text-xl"><i class="fas fa-shield-halved"></i></div>
+                <div>
+                  <h4 class="font-bold text-slate-900 dark:text-gray-100 text-sm mb-1">Buyer Protection Guarantee</h4>
+                  <p class="text-sm text-gray-600 dark:text-slate-400">Get a full refund if your order doesn't arrive or isn't as described. We ensure your shopping experience is safe and secure.</p>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+  
+      <!-- You May Also Like Section -->
+      @if (relatedProducts() && relatedProducts().length > 0) {
+        <div class="pt-8 border-t border-gray-200 dark:border-slate-800">
+          <div class="flex items-center justify-between mb-8">
+            <h2 class="text-2xl font-bold text-slate-900 dark:text-gray-100 flex items-center gap-3">
+              <span class="w-1.5 h-6 bg-emerald-500 rounded-full"></span> You May Also <span class="text-emerald-600">Like</span>
+            </h2>
+            <!-- Optional: Carousel controls could go here -->
+          </div>
+          <app-products-shared [externalProducts]="relatedProducts()" [limit]="5" [compactTitle]="true"></app-products-shared>
+        </div>
+      }
+      
+    </div>
+  </section>
+  }
+

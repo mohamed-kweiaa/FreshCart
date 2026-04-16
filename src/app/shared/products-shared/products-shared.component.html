@@ -1,0 +1,90 @@
+<section>
+  <div class="container mb-4">
+    <div class="grid sm:grid-cols-3 lg-grid-cols-4 xl:grid-cols-5 gap-4">
+      @for (product of displayedProducts(); track product.id) {
+        <div
+          class="bg-white dark:bg-[#151923] border border-gray-100 dark:border-slate-800 rounded-2xl p-4 shadow-sm hover:shadow-md dark:hover:shadow-slate-900/50 transition-shadow duration-300 group font-sans"
+        >
+          <div class="hover:bg-transparent cursor-pointer">
+            <div class="relative overflow-hidden mb-4">
+              <img
+                [routerLink]="['/details', product.id, product.slug]"
+                [src]="product.imageCover"
+                [alt]="product.title"
+                class="w-full h-auto object-contain dark:bg-white/5 dark:rounded-xl dark:p-1"
+              />
+
+              <!--  ! ----------- Icons  Heart ! ----------- ....  -->
+              <div class="absolute top-2 right-2 flex flex-col gap-2">
+                <button
+                  (click)="toggleWishlist(product.id, $event)"
+                  [class]="'w-10 h-10 shadow-sm border rounded-full flex items-center justify-center transition-all cursor-pointer ' +
+                    (wishlistService.isInWishlist(product.id)
+                      ? 'bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-800 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/50'
+                      : 'bg-white dark:bg-slate-800 border-gray-100 dark:border-slate-700 text-gray-600 dark:text-gray-400 hover:bg-emerald-600 hover:text-white')"
+                >
+                  <i [class]="wishlistService.isInWishlist(product.id) ? 'fas fa-heart' : 'far fa-heart'"></i>
+                </button>
+
+                <button
+                  class="w-10 h-10 bg-white dark:bg-slate-800 shadow-sm border border-gray-100 dark:border-slate-700 rounded-full flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-emerald-600 hover:text-white transition-all"
+                >
+                  <i class="fas fa-sync-alt"></i>
+                </button>
+
+                <button
+                  [routerLink]="['/details', product.id, product.slug]"
+                  class="w-10 cursor-pointer h-10 bg-white dark:bg-slate-800 shadow-sm border border-gray-100 dark:border-slate-700 rounded-full flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-emerald-600 hover:text-white transition-all"
+                >
+                  <i class="far fa-eye"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="space-y-1">
+              <p class="text-xs text-gray-400 dark:text-slate-500 tracking-wide">{{ product.category.name }}</p>
+
+              <h3
+                [routerLink]="['/details', product.id, product.slug]"
+                [title]="product.title"
+                [class]="'text-lg font-medium text-slate-800 dark:text-gray-100 hover:text-emerald-600 cursor-pointer transition-colors ' + (compactTitle() ? 'line-clamp-1' : 'line-clamp-2')"
+              >
+                {{ product.title }}
+              </h3>
+
+              @if(compactTitle()) {
+                <p class="text-xs text-gray-400 dark:text-slate-500 line-clamp-1 mt-0.5">{{ product.description }}</p>
+              }
+
+              <div class="flex items-center gap-2 justify-content-center align-items-center">
+                <div class="text-lg text-gray-500 font-medium">
+                  <app-star-rating
+                    [rating]="product.ratingsAverage"
+                    [maxRating]="5"
+                  ></app-star-rating>
+                </div>
+                <span class="text-sm text-gray-600 dark:text-slate-400 fw-bold lh-lg">
+                  ({{ product.ratingsQuantity }}) Reviews</span
+                >
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between pt-2">
+            <div class="flex flex-col">
+              <span class="text-lg font-medium text-slate-900 dark:text-gray-100"> {{ product.price }} EGP</span>
+            </div>
+
+            <button
+              (click)="addToCart(product.id, $event)"
+              [class]="'w-10 h-10 cursor-pointer rounded-lg flex items-center justify-center transition-all shadow-sm active:scale-95 ' + 
+              (cartService.isInCart(product.id) ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400' : 'bg-emerald-600 text-white hover:bg-emerald-700')"
+            >
+              <i [class]="cartService.isInCart(product.id) ? 'fas fa-check' : 'fas fa-plus'"></i>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+</section>

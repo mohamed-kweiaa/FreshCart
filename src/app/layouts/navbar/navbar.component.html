@@ -1,0 +1,337 @@
+<nav
+  class="sticky top-0 z-40 w-full border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-[#151923] px-6 py-4 font-sans shadow-sm dark:shadow-slate-900/30 transition-colors duration-300"
+>
+  <div class="mx-auto flex max-w-7xl items-center justify-between gap-4">
+    <!-- logo  -->
+    <a class="shrink-0" routerLink="/">
+      <img src="/assets/fresh-logo.svg" alt="FreshCart" class="h-7 md:h-8 dark:brightness-110" />
+    </a>
+
+    <!-- input search  -->
+    <div class="hidden lg:block grow max-w-md">
+      <div class="group relative">
+        <input
+          type="text"
+          placeholder="Search for products..."
+          class="w-full rounded-full border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 dark:text-gray-200 px-6 py-2 pr-12 outline-none transition-all focus:border-emerald-500 focus:ring-emerald-500 dark:placeholder:text-slate-500"
+        />
+        <button
+          class="absolute right-1 top-1 bottom-1 flex w-9 items-center justify-center rounded-full bg-emerald-600 text-white transition-colors hover:bg-emerald-700"
+        >
+          <i class="fas fa-search text-xs"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- !---------------------------- links  !---------------------------- -->
+    <div class="hidden items-center gap-6 md:flex">
+      <a
+        routerLink="/"
+        [routerLinkActiveOptions]="{ exact: true }"
+        routerLinkActive="text-primary"
+        class="font-medium text-gray-700 dark:text-gray-300 transition-colors hover:text-emerald-600"
+        >Home</a
+      >
+      <a
+        routerLink="/shop"
+        routerLinkActive="text-primary"
+        class="font-medium text-gray-700 dark:text-gray-300 transition-colors hover:text-emerald-600"
+        >Shop</a
+      >
+      <div class="group relative">
+        <button
+          class="flex items-center gap-1 py-2 font-medium text-gray-700 dark:text-gray-300 transition-colors group-hover:text-emerald-600"
+        >
+          Categories
+          <i class="fas fa-chevron-down text-2xs transition-transform group-hover:rotate-180"></i>
+        </button>
+        <div
+          class="invisible absolute left-0 z-50 mt-0 w-48 rounded-lg border border-gray-100 dark:border-slate-700 bg-white dark:bg-[#1e2330] opacity-0 shadow-xl transition-all duration-200 group-hover:visible group-hover:opacity-100"
+        >
+          <ul class="py-2 text-sm text-gray-700 dark:text-gray-300">
+            <li>
+              <a
+                routerLink="/categories"
+                routerLinkActive="text-primary"
+                class="block px-4 py-2 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 hover:text-emerald-600"
+                >All Categories</a
+              >
+            </li>
+            @for (category of categoriesList(); track category._id) {
+              <li>
+                <a
+                  [routerLink]="['/products']"
+                  [queryParams]="{ category: category._id, name: category.name }"
+                  class="block px-4 py-2 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 hover:text-emerald-600"
+                  >{{ category.name }}</a
+                >
+              </li>
+            }
+          </ul>
+        </div>
+      </div>
+      <a
+        routerLink="/brands"
+        routerLinkActive="text-primary"
+        class="font-medium text-gray-700 dark:text-gray-300 transition-colors hover:text-emerald-600"
+        >Brands</a
+      >
+    </div>
+
+    <!-- ? --------------- ICONS  & signin ? ---------------  -->
+    <div class="flex items-center gap-2 md:gap-4">
+      <!-- Theme Toggle Button -->
+      <button
+        (click)="themeService.toggleTheme()"
+        class="flex h-10 w-10 items-center justify-center rounded-full text-gray-600 dark:text-gray-300 transition-all hover:bg-gray-100 dark:hover:bg-slate-800 cursor-pointer"
+        [title]="themeService.isDarkMode() ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
+      >
+        <i [class]="'theme-toggle-icon text-lg ' + (themeService.isDarkMode() ? 'fas fa-sun text-amber-400' : 'fas fa-moon text-slate-500')"></i>
+      </button>
+
+      <button
+        class="flex h-10 w-10 items-center justify-center rounded-full text-gray-600 dark:text-gray-300 transition-all hover:bg-gray-100 dark:hover:bg-slate-800 lg:hidden"
+      >
+        <i class="fas fa-search text-lg"></i>
+      </button>
+      <button
+        routerLink="/wishlist"
+        routerLinkActive="text-primary"
+        class="relative flex h-10 w-10 items-center justify-center rounded-full text-gray-600 dark:text-gray-300 transition-all hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-emerald-600"
+      >
+        <i class="far fa-heart text-xl"></i>
+        @if (wishlistService.wishlistCount() > 0) {
+          <span
+            class="absolute right-1 top-1 rounded-full border-2 border-white dark:border-[#151923] bg-red-500 px-0.5 text-2xs font-bold text-white"
+            >{{ wishlistService.wishlistCount() }}</span
+          >
+        }
+      </button>
+      <button
+        routerLink="/cart"
+        routerLinkActive="text-primary"
+        class="relative flex h-10 w-10 items-center justify-center rounded-full text-gray-600 dark:text-gray-300 transition-all hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-emerald-600"
+      >
+        <i class="fas fa-shopping-cart text-xl"></i>
+        @if (cartService.cartCount() > 0) {
+          <span
+            class="absolute right-1 top-1 rounded-full border-2 border-white dark:border-[#151923] bg-emerald-600 px-0.5 text-2xs font-bold text-white"
+            >{{ cartService.cartCount() }}</span
+          >
+        }
+      </button>
+
+      <div class="hidden sm:flex items-center gap-2 pl-2 md:border-l md:border-gray-200 dark:md:border-slate-700 md:pl-6">
+        <div class="flex flex-col items-start pr-2">
+           <span class="text-xs text-gray-400 dark:text-slate-500 font-medium leading-none">Support</span>
+           <span class="text-xs text-gray-800 dark:text-gray-200 font-bold">24/7 Help</span>
+        </div>
+        @if (isLoggedIn()) {
+          <div class="relative group">
+            <button
+              class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 transition-all hover:bg-emerald-100 dark:hover:bg-emerald-900/50"
+            >
+              <i class="far fa-user text-xl"></i>
+            </button>
+            
+            <div class="invisible absolute right-0 z-50 mt-2 w-64 origin-top-right rounded-2xl border border-gray-100 dark:border-slate-700 bg-white dark:bg-[#1e2330] opacity-0 shadow-2xl transition-all duration-200 group-hover:visible group-hover:opacity-100">
+              <div class="p-4 border-b border-gray-100 dark:border-slate-700 flex items-center gap-3">
+                <div class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600">
+                  <i class="far fa-user text-lg"></i>
+                </div>
+                <div>
+                  <h6 class="text-sm font-bold text-gray-800 dark:text-gray-100">{{authService.currentUser()?.name || 'My Account'}}</h6>
+                  <p class="text-[10px] text-gray-500 dark:text-slate-400 truncate max-w-[140px]">{{authService.currentUser()?.email}}</p>
+                </div>
+              </div>
+              <ul class="py-2 text-sm text-gray-600 dark:text-gray-300">
+                <li>
+                  <a routerLink="/profile" class="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-emerald-600 transition-colors">
+                    <i class="far fa-user w-4 text-center"></i> My Profile
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/orders" class="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-emerald-600 transition-colors">
+                    <i class="fas fa-box w-4 text-center"></i> My Orders
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/wishlist" class="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-emerald-600 transition-colors">
+                    <i class="far fa-heart w-4 text-center"></i> My Wishlist
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/profile/addresses" class="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-emerald-600 transition-colors">
+                    <i class="far fa-address-book w-4 text-center"></i> Addresses
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/profile/settings" class="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-emerald-600 transition-colors">
+                    <i class="fas fa-cog w-4 text-center"></i> Settings
+                  </a>
+                </li>
+              </ul>
+              <div class="border-t border-gray-100 dark:border-slate-700 p-2">
+                <button (click)="signOut()" class="flex w-full items-center gap-3 rounded-xl px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors font-medium">
+                  <i class="fas fa-sign-out-alt w-4 text-center"></i> Sign Out
+                </button>
+              </div>
+            </div>
+          </div>
+        } @else {
+          <a
+            routerLink="/login"
+            class="px-5 py-2.5 rounded-xl font-semibold text-sm text-gray-700 dark:text-gray-300 hover:text-emerald-600 transition-all duration-200"
+          >
+            Sign In
+          </a>
+          <a
+            routerLink="/register"
+            class="px-6 py-2.5 rounded-xl bg-emerald-600 text-white font-semibold text-sm shadow-lg shadow-emerald-500/30 hover:bg-emerald-700 hover:-translate-y-0.5 transition-all duration-300 active:translate-y-0"
+          >
+            Sign Up
+          </a>
+        }
+      </div>
+
+      <!-- dropdown when login -->
+
+      <!-- bars button  -->
+      <button
+        type="button"
+        data-drawer-target="drawer-right"
+        data-drawer-show="drawer-right"
+        data-drawer-placement="right"
+        class="p-2 text-gray-600 dark:text-gray-300 hover:text-emerald-600 md:hidden focus:outline-none transition-colors"
+      >
+        <i class="fas fa-bars text-2xl"></i>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- --------------- navbar responsive ---------------- -->
+
+<div
+  id="drawer-right"
+  class="fixed top-0 right-0 z-50 h-screen w-80 translate-x-full overflow-y-auto bg-white dark:bg-[#151923] p-6 shadow-2xl transition-transform"
+  tabindex="-1"
+>
+  <!-- logo  -->
+  <div class="mb-8 flex items-center justify-between">
+    <img src="/assets/fresh-logo.svg" alt="Logo" class="h-7 dark:brightness-110" />
+    <button
+      type="button"
+      data-drawer-hide="drawer-right"
+      class="rounded-full bg-gray-100 dark:bg-slate-800 p-2 text-gray-400 dark:text-gray-500 hover:bg-gray-200 dark:hover:bg-slate-700"
+    >
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  <!-- search  -->
+  <div class="relative mb-8">
+    <input
+      type="text"
+      placeholder="Search products..."
+      class="w-full rounded-lg border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 dark:text-gray-200 px-4 py-2.5 text-sm outline-none focus:border-emerald-500 focus:ring-emerald-500 dark:placeholder:text-slate-500"
+    />
+    <button class="absolute right-3 top-2.5 text-emerald-600"><i class="fas fa-search"></i></button>
+  </div>
+
+  <!-- Theme toggle in mobile drawer -->
+  <div class="mb-6">
+    <button
+      (click)="themeService.toggleTheme()"
+      class="w-full flex items-center gap-3 rounded-xl p-3 bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 transition-colors"
+    >
+      <div class="flex h-10 w-10 items-center justify-center rounded-full bg-amber-50 dark:bg-slate-700 text-amber-500 dark:text-amber-400">
+        <i [class]="themeService.isDarkMode() ? 'fas fa-sun text-lg' : 'fas fa-moon text-lg'"></i>
+      </div>
+      <span class="font-medium text-gray-700 dark:text-gray-200">{{ themeService.isDarkMode() ? 'Light Mode' : 'Dark Mode' }}</span>
+    </button>
+  </div>
+
+  <!-- links  -->
+  <nav class="mb-1 border-b border-gray-100 dark:border-slate-800 pb-2">
+    <ul class="space-y-5 font-medium text-gray-800 dark:text-gray-200">
+      <li>
+        <a
+          routerLink="/"
+          routerLinkActive="text-primary"
+          class="block transition-colors hover:text-emerald-600"
+          >Home</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="/shop"
+          routerLinkActive="text-primary"
+          class="block transition-colors hover:text-emerald-600"
+          >Shop</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="/categories"
+          routerLinkActive="text-primary"
+          class="block transition-colors hover:text-emerald-600"
+          >Categories</a
+        >
+      </li>
+    </ul>
+  </nav>
+
+  <div class="mb-2 space-y-2">
+    <a
+      routerLink="/wishlist"
+      routerLinkActive="text-primary"
+      class="group flex cursor-pointer items-center gap-1 rounded-xl p-1 transition-colors hover:bg-gray-50 dark:hover:bg-slate-800"
+    >
+      <div class="flex h-11 w-11 items-center justify-center rounded-full bg-red-50 dark:bg-red-900/20 text-red-500">
+        <i class="far fa-heart text-lg"></i>
+      </div>
+      <span class="font-medium text-gray-700 dark:text-gray-200 group-hover:text-red-600">Wishlist</span>
+    </a>
+    <a
+      routerLink="/cart"
+      routerLinkActive="text-primary"
+      class="group flex cursor-pointer items-center gap-1 rounded-xl p-1 transition-colors hover:bg-gray-50 dark:hover:bg-slate-800"
+    >
+      <div
+        class="flex h-11 w-11 items-center justify-center rounded-full bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600"
+      >
+        <i class="fas fa-shopping-cart text-lg"></i>
+      </div>
+      <span class="font-medium text-gray-700 dark:text-gray-200 group-hover:text-emerald-600">My Cart</span>
+    </a>
+  </div>
+
+  <div class="space-y-2 border-t border-gray-100 dark:border-slate-800 pt-2">
+    <a
+      routerLink="/login"
+      routerLinkActive="text-primary"
+      class="group flex cursor-pointer items-center gap-1 rounded-xl p-1 transition-colors hover:bg-emerald-50 dark:hover:bg-emerald-900/20"
+    >
+      <div
+        class="flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-400 transition-colors group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/30 group-hover:text-emerald-600"
+      >
+        <i class="far fa-user text-lg"></i>
+      </div>
+      <span class="font-bold text-gray-700 dark:text-gray-200 group-hover:text-emerald-600">Sign In</span>
+    </a>
+
+    <a
+      routerLink="/register"
+      routerLinkActive="text-primary"
+      class="group flex cursor-pointer items-center gap-1 rounded-xl p-1 transition-colors hover:bg-emerald-50 dark:hover:bg-emerald-900/20"
+    >
+      <div
+        class="flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-400 transition-colors group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/30 group-hover:text-emerald-600"
+      >
+        <i class="fas fa-user-plus text-lg"></i>
+      </div>
+      <span class="font-bold text-gray-700 dark:text-gray-200 group-hover:text-emerald-600">Sign Up</span>
+    </a>
+  </div>
+</div>
